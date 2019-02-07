@@ -23,9 +23,10 @@ use Pimcore\Model;
 /**
  * @method \Pimcore\Model\DataObject\Objectbrick\Dao getDao()
  */
-class Objectbrick extends Model\AbstractModel implements DirtyIndicatorInterface
+class Objectbrick extends Model\AbstractModel implements DirtyIndicatorInterface, Model\DataObject\ClassDefinition\Data\LazyLoadedRelationInterface
 {
     use Model\DataObject\Traits\DirtyIndicatorTrait;
+    use Model\DataObject\Traits\LazyLoadedRelationTrait;
 
     /**
      * @var array
@@ -165,6 +166,7 @@ class Objectbrick extends Model\AbstractModel implements DirtyIndicatorInterface
     {
         // set the current object again, this is necessary because the related object in $this->object can change (eg. clone & copy & paste, etc.)
         $this->setObject($object);
+//        $this->loadLazyData();
 
         $getters = $this->getBrickGetters();
 
@@ -313,4 +315,51 @@ class Objectbrick extends Model\AbstractModel implements DirtyIndicatorInterface
     {
         return $this->{'set'.ucfirst($fieldName)}($value);
     }
+
+    /**
+     * @internal
+     * @param $brick
+     * @param $brickField
+     * @param $field
+     * @return string
+     */
+    public static function generateLazyKey($brick, $brickField, $field) {
+        return $brick . "_" . $brickField . '_'. $field;
+    }
+
+    /** @internal
+     * @param $brick
+     * @param $brickField
+     * @param $field
+     * @throws \Exception
+     */
+    public function loadLazyField($brick, $brickField, $field) {
+        $lazyKey = self::generateLazyKey($brick, $brickField, $field);
+        if ($this->hasLazyKey($lazyKey)) {
+
+            $brickDef = Model\DataObject\Objectbrick\Definition::getByKey($brick);
+            /** @var  $fieldDef Model\DataObject\ClassDefinition\Data\CustomResourcePersistingInterface */
+            $fieldDef = $brickDef->getFieldDefinition($field);
+            $context = [];
+            $context['object'] = $this->object;
+            $context['containerType'] = 'objectbrick';
+            $context['containerKey'] = $brick;
+            $context['brickField'] = $brickField;
+            $context['fieldname'] = $field;
+            $params['context'] = $context;
+
+            $isDirtyDetectionDisabled = AbstractObject::isDirtyDetectionDisabled();
+            AbstractObject::disableDirtyDetection();
+            $data = $fieldDef->load($this->$brick, $params);
+            AbstractObject::setDisableDirtyDetection($isDirtyDetectionDisabled);
+
+            $getter = "get" . ucfirst($brick);
+            $brickData = $this->$getter();
+
+            $brickData->setObjectVar($field, $data);
+            $this->removeLazyKey($lazyKey);
+        }
+    }
+
+
 }

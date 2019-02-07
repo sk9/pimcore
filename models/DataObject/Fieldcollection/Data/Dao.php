@@ -34,7 +34,7 @@ class Dao extends Model\Dao\AbstractDao
      *
      * @throws \Exception
      */
-    public function save(Model\DataObject\Concrete $object, $params = [], $saveRelationalData = true)
+    public function save(Model\DataObject\Concrete $object, $params = [])
     {
         $tableName = $this->model->getDefinition()->getTableName($object->getClass());
         $data = [
@@ -52,7 +52,7 @@ class Dao extends Model\Dao\AbstractDao
                     if (!$fd instanceof CustomResourcePersistingInterface) {
                         Tool::triggerMissingInterfaceDeprecation(get_class($fd), 'save', CustomResourcePersistingInterface::class);
                     }
-                    if (!$fd instanceof Model\DataObject\ClassDefinition\Data\Localizedfields && $fd->supportsDirtyDetection() && !$saveRelationalData) {
+                    if (!$fd instanceof Model\DataObject\ClassDefinition\Data\Localizedfields && $fd->supportsDirtyDetection() && !$params["saveFieldcollectionRelations"]) {
                         continue;
                     }
 
@@ -72,7 +72,7 @@ class Dao extends Model\Dao\AbstractDao
 
                     );
                 }
-                if ($fd instanceof ResourcePersistenceAwareInterface || method_exists($fd, 'getDataForResource')) {
+                if ($fd instanceof ResourcePersistenceAwareInterface || (!method_exists($fd, 'save') && $fd->getColumnType())) {
                     if (!$fd instanceof ResourcePersistenceAwareInterface) {
                         Tool::triggerMissingInterfaceDeprecation(get_class($fd), 'getDataForResource', ResourcePersistenceAwareInterface::class);
                     }

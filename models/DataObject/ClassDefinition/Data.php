@@ -738,6 +738,13 @@ abstract class Data
         $code .= '*/' . "\n";
         $code .= 'public function get' . ucfirst($key) . " () {\n";
 
+        if ($this instanceof DataObject\ClassDefinition\Data\Relations\AbstractRelations && $this->getLazyLoading()) {
+            $code .= "\t" . '$model = $this->object->getObjectVar($this->fieldname);' . "\n";
+            $code .= "\t" . 'if ($model) {' . "\n";
+            $code .= "\t\t" . '$model->loadLazyField($this->type, $this->fieldname, "' . $this->getName() . '");' . "\n";
+            $code .= "\t" . '}' . "\n";
+        }
+
         if (method_exists($this, 'preGetData')) {
             $code .= "\t" . '$data = $this->getDefinition()->getFieldDefinition("' . $key . '")->preGetData($this);' . "\n";
         } else {

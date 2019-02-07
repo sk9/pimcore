@@ -213,7 +213,7 @@ class Dao extends Model\Dao\AbstractDao
         }
 
         if (!$this->model->isFieldDirty('_self') && !DataObject\AbstractObject::isDirtyDetectionDisabled()) {
-            return false;
+            return [];
         }
         $whereLocalizedFields = "(ownertype = 'localizedfield' AND "
             . $this->db->quoteInto('ownername LIKE ?', '/fieldcollection~'
@@ -225,7 +225,7 @@ class Dao extends Model\Dao\AbstractDao
                 // always empty localized fields
                 $this->db->deleteWhere('object_relations_' . $object->getClassId(), $whereLocalizedFields);
 
-                return false;
+                return ["saveLocalizedRelations" => true];
             }
         }
 
@@ -236,6 +236,6 @@ class Dao extends Model\Dao\AbstractDao
         // empty relation table
         $this->db->deleteWhere('object_relations_' . $object->getClassId(), $where);
 
-        return true;
+        return ["saveFieldcollectionRelations" => true, "saveLocalizedRelations" => true];;
     }
 }
