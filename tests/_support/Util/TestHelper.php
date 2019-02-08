@@ -286,6 +286,7 @@ class TestHelper
             $localeService = \Pimcore::getContainer()->get('pimcore.locale');
             $localeBackup = $localeService->getLocale();
 
+            // TODO refactor this as it was never the right way to access localized data anyway!
             foreach ($data->getInternalData(true) as $language => $values) {
                 /** @var ObjectModel\ClassDefinition\Data $nestedFd */
                 foreach ($fd->getFieldDefinitions() as $nestedFd) {
