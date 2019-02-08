@@ -835,6 +835,13 @@ abstract class Data
         $code .= '*/' . "\n";
         $code .= 'public function get' . ucfirst($key) . " () {\n";
 
+        if ($this instanceof DataObject\ClassDefinition\Data\Relations\AbstractRelations && $this->getLazyLoading()) {
+            $code .= "\t" . '$model = $this->object->getObjectVar($this->fieldname);' . "\n";
+            $code .= "\t" . 'if ($model) {' . "\n";
+            $code .= "\t\t" . '$model->loadLazyField($this->object, $this->type, $this->fieldname, $this->index, "' . $this->getName() . '");' . "\n";
+            $code .= "\t" . '}' . "\n";
+        }
+
         if (method_exists($this, 'preGetData')) {
             $code .= "\t" . '$container = $this;' . "\n";
             $code .= "\t" . '$fd = $this->getDefinition()->getFieldDefinition("' . $key . '");' . "\n";
@@ -888,6 +895,13 @@ abstract class Data
             $code .= "\t" . '$isEqual = $fd->isEqual($currentData, $' . $key . ');' . "\n";
             $code .= "\t" . 'if (!$isEqual) {' . "\n";
             $code .= "\t\t" . '$this->markFieldDirty("' . $key . '", true);' . "\n";
+
+
+            $code .= "\t\t" . '$model = $this->object->getObjectVar($this->fieldname);' . "\n";
+            $code .= "\t\t" . 'if ($model) {' . "\n";
+            $code .= "\t\t\t" . '$model->markFieldDirty("_self", true);' . "\n";
+            $code .= "\t\t" . '}' . "\n";
+
             $code .= "\t" . '}' . "\n";
         }
 

@@ -30,6 +30,13 @@ class Version20190207150938 extends AbstractPimcoreMigration
             $this->writeMessage(sprintf('Saving object brick: %s', $brickDefinition->getKey()));
             $brickDefinition->save();
         }
+
+        $list = new DataObject\Fieldcollection\Definition\Listing();
+        $list = $list->load();
+        foreach ($list as $fc) {
+            $this->writeMessage(sprintf('Saving field collection: %s', $fc->getKey()));
+            $fc->save();
+        }
     }
 
     /**

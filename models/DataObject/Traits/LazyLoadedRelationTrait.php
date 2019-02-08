@@ -22,6 +22,11 @@ trait LazyLoadedRelationTrait
 {
 
     /**
+     * @var bool
+     */
+    protected static $disableLazyLoading = false;
+
+    /**
      * @var array
      */
     protected $lazyKeys = [];
@@ -62,6 +67,42 @@ trait LazyLoadedRelationTrait
     public function getLazyKeys() {
         return $this->lazyKeys;
     }
+
+    /**
+     * @return bool
+     */
+    public static function isLazyLoadingDisabled()
+    {
+        return self::$disableLazyLoading;
+    }
+
+    /**
+     * @internal
+     * @param bool $disableLazyLoading
+     */
+    public static function setDisableLazyLoading(bool $disableLazyLoading)
+    {
+        self::$disableLazyLoading = $disableLazyLoading;
+    }
+
+    /**
+     * @internal
+     * Disables lazy loading
+     */
+    public static function disableLazyLoading()
+    {
+        self::setDisableLazyloading(true);
+    }
+
+    /**
+     * @internal
+     * Enables the lazy loading
+     */
+    public static function enableLazyloading()
+    {
+        self::setDisableLazyloading(false);
+    }
+
 
 
 }

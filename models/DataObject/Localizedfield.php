@@ -37,11 +37,6 @@ class Localizedfield extends Model\AbstractModel implements DirtyIndicatorInterf
     /**
      * @var bool
      */
-    protected static $disableLazyLoading = false;
-
-    /**
-     * @var bool
-     */
     private static $getFallbackValues = false;
 
     /**
@@ -74,40 +69,6 @@ class Localizedfield extends Model\AbstractModel implements DirtyIndicatorInterf
      * list of dirty languages. if null then no language is dirty. if empty array then all languages are dirty
      */
     protected $o_dirtyLanguages;
-
-    /**
-     * @return bool
-     */
-    public static function isLazyLoadingDisabled()
-    {
-        return self::$disableLazyLoading;
-    }
-
-    /**
-     * @param bool $disableLazyloading
-     */
-    public static function setDisableLazyloading(bool $disableLazyloading)
-    {
-        self::$disableLazyloading = $disableLazyloading;
-    }
-
-    /**
-     * Disables lazy loading
-     */
-    public static function disableLazyLoading()
-    {
-        self::setDisableLazyoading(true);
-    }
-
-    /**
-     * Enables the lazy loading
-     */
-    public static function enableLazyloading()
-    {
-        self::setDisableLazyloading(false);
-    }
-
-
 
     /**
      * @param bool $getFallbackValues
@@ -342,10 +303,19 @@ class Localizedfield extends Model\AbstractModel implements DirtyIndicatorInterf
             $params['object'] = $this->getObject();
             $params['context'] = $this->getContext();
 
+            $isDirtyDetectionDisabled = AbstractObject::isDirtyDetectionDisabled();
+            AbstractObject::disableDirtyDetection();
+
+
             $data = $fieldDefinition->load($this, $params);
+
+
             if ($data === 0 || !empty($data)) {
                 $this->setLocalizedValue($name, $data, $language, false);
             }
+
+            AbstractObject::setDisableDirtyDetection($isDirtyDetectionDisabled);
+
             $this->removeLazyKey($lazyKey);
         }
     }
@@ -618,6 +588,10 @@ class Localizedfield extends Model\AbstractModel implements DirtyIndicatorInterf
      */
     public function markLanguageAsDirty($language, $dirty = true)
     {
+        if (AbstractObject::isDirtyDetectionDisabled()) {
+            return;
+        }
+
         if (!is_array($this->o_dirtyLanguages) && $dirty) {
             $this->o_dirtyLanguages = [];
         }

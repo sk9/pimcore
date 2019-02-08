@@ -1,7 +1,7 @@
 # Upgrade Notes for Upgrades within Pimcore 5
 
 
-## Version x.y.z
+## Version 5.6.4
 - Removed method `Pimcore\Model\DataObject\getItems()`
 
 ## Version 5.6.0
