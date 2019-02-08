@@ -286,7 +286,7 @@ class TestHelper
             $localeService = \Pimcore::getContainer()->get('pimcore.locale');
             $localeBackup = $localeService->getLocale();
 
-            foreach ($data->getItems() as $language => $values) {
+            foreach ($data->getInternalData(true) as $language => $values) {
                 /** @var ObjectModel\ClassDefinition\Data $nestedFd */
                 foreach ($fd->getFieldDefinitions() as $nestedFd) {
                     $localeService->setLocale($language);
