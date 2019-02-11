@@ -952,12 +952,12 @@ class TestDataHelper extends Module
     }
 
     /**
-     * @param Concrete    $object
+     * @param Concrete|DataObject\Fieldcollection\Data\AbstractData|DataObject\Objectbrick\Data\AbstractData    $object
      * @param string      $field
      * @param int         $seed
      * @param string|null $language
      */
-    public function fillObjects(Concrete $object, $field, $seed = 1, $language = null)
+    public function fillObjects($object, $field, $seed = 1, $language = null)
     {
         $setter = 'set' . ucfirst($field);
         $objects = $this->getObjectList("o_type = 'object'");
@@ -976,13 +976,13 @@ class TestDataHelper extends Module
     }
 
     /**
-     * @param Concrete      $object
+     * @param Concrete|DataObject\Fieldcollection\Data\AbstractData|DataObject\Objectbrick\Data\AbstractData      $object
      * @param string        $field
      * @param Concrete|null $comparisonObject
      * @param int           $seed
      * @param string|null   $language
      */
-    public function assertObjects(Concrete $object, $field, $seed = 1, $language = null)
+    public function assertObjects($object, $field, $seed = 1, $language = null)
     {
         $getter = 'get' . ucfirst($field);
 
@@ -1155,6 +1155,8 @@ class TestDataHelper extends Module
         $fc = new DataObject\Fieldcollection\Data\Unittestfieldcollection();
         $fc->setFieldinput1('field1' . $seed);
         $fc->setFieldinput2('field2' . $seed);
+        $objects = $this->getObjectList("o_type = 'object'");
+        $fc->setFieldRelation($objects);
 
         $items = new DataObject\Fieldcollection([$fc], $field);
         $object->$setter($items);
@@ -1190,6 +1192,8 @@ class TestDataHelper extends Module
             $value->getFieldinput2(),
             'expected field2' . $seed . ' but was ' . $value->getFieldInput2()
         );
+
+        $this->assertObjects($value, "fieldRelation");
     }
 
     public function assertElementsEqual(ElementInterface $e1, ElementInterface $e2)

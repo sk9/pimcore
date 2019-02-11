@@ -288,8 +288,7 @@ class TestHelper
             $localeBackup = $localeService->getLocale();
 
             $validLanguages = Tool::getValidLanguages();
-            // TODO refactor this as it was never the right way to access localized data anyway!
-//            foreach ($data->getInternalData(true) as $language => $values) {
+
             foreach ($validLanguages as $language) {
                 /** @var ObjectModel\ClassDefinition\Data $nestedFd */
                 foreach ($fd->getFieldDefinitions() as $nestedFd) {
