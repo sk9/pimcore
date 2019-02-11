@@ -987,10 +987,13 @@ class TestDataHelper extends Module
         $getter = 'get' . ucfirst($field);
 
         codecept_debug("getting " . $getter . "\n");
+        codecept_debug("class: " . get_class($object) . "\n");
 
         $objects = $this->getObjectList("o_type = 'object'");
         codecept_debug("count1: " . count($objects). "\n");
 
+
+        codecept_debug("language: " . $language . "\n");
 
         if ($language) {
             if ($language === 'de') {
@@ -999,6 +1002,7 @@ class TestDataHelper extends Module
                 $expectedArray = array_slice($objects, 0, 5);
             }
             $value = $object->$getter($language);
+            codecept_debug("count3: " . count($value) . "\n");
         } else {
             $expectedArray = array_slice($objects, 0, 4);
 
