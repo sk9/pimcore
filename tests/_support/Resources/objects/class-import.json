@@ -5881,7 +5881,9 @@
                             {
                                 "fieldtype": "fieldcollections",
                                 "phpdocType": "\\Pimcore\\Model\\DataObject\\Fieldcollection",
-                                "allowedTypes": [],
+                                "allowedTypes":[
+                                    "unittestfieldcollection"
+                                ],
                                 "lazyLoading": false,
                                 "maxItems": "",
                                 "disallowAddRemove": false,
