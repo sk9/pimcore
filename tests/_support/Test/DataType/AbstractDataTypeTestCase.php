@@ -419,6 +419,28 @@ abstract class AbstractDataTypeTestCase extends TestCase
         $this->testDataHelper->assertObjects($this->testObject, 'lobjects', $this->seed, 'de');
     }
 
+    public function testLazyLocalizedMultihref()
+    {
+        TestHelper::createEmptyObjects();
+
+        $this->createTestObject([
+            [
+                'method' => 'fillObjects',
+                'field' => 'lmultihrefLazy',
+                'arguments' => ['de']
+            ],
+            [
+                'method' => 'fillObjects',
+                'field' => 'lmultihrefLazy',
+                'arguments' => ['en']
+            ]
+        ]);
+
+        $this->testDataHelper->assertObjects($this->testObject, 'lmultihrefLazy', $this->seed, 'en');
+        $this->testDataHelper->assertObjects($this->testObject, 'lmultihrefLazy', $this->seed, 'de');
+    }
+
+
     public function testBricks()
     {
         $this->createTestObject([
