@@ -836,7 +836,7 @@ abstract class Data
         $code .= 'public function get' . ucfirst($key) . " () {\n";
 
         if ($this instanceof DataObject\ClassDefinition\Data\Relations\AbstractRelations && $this->getLazyLoading()) {
-            $code .= "\t" . '$model = $this->object->getObjectVar($this->fieldname);' . "\n";
+            $code .= "\t" . '$model = $this->object ? $this->object->getObjectVar($this->fieldname) : null;' . "\n";
             $code .= "\t" . 'if ($model) {' . "\n";
             $code .= "\t\t" . '$model->loadLazyField($this->object, $this->type, $this->fieldname, $this->index, "' . $this->getName() . '");' . "\n";
             $code .= "\t" . '}' . "\n";
@@ -897,7 +897,7 @@ abstract class Data
             $code .= "\t\t" . '$this->markFieldDirty("' . $key . '", true);' . "\n";
 
 
-            $code .= "\t\t" . '$model = $this->object->getObjectVar($this->fieldname);' . "\n";
+            $code .= "\t\t" . '$model = $this->object ? $this->object->getObjectVar($this->fieldname) : null;' . "\n";
             $code .= "\t\t" . 'if ($model) {' . "\n";
             $code .= "\t\t\t" . '$model->markFieldDirty("_self", true);' . "\n";
             $code .= "\t\t" . '}' . "\n";
