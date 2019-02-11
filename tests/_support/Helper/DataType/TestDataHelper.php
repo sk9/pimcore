@@ -1159,8 +1159,7 @@ class TestDataHelper extends Module
         $fc->setFieldinput1('field1' . $seed);
         $fc->setFieldinput2('field2' . $seed);
         $objects = $this->getObjectList("o_type = 'object'");
-        $fc->setFieldRelation($objects);
-
+        $this->fillObjects($fc, 'fieldRelation');
         $items = new DataObject\Fieldcollection([$fc], $field);
         $object->$setter($items);
     }
