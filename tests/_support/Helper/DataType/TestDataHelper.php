@@ -999,9 +999,6 @@ class TestDataHelper extends Module
             $value = $object->$getter();
         }
 
-        var_export($expectedArray);
-        var_export($value);
-
         $this->assertEquals(
             $this->getElementPaths($expectedArray),
             $this->getElementPaths($value)
@@ -1158,7 +1155,6 @@ class TestDataHelper extends Module
         $fc = new DataObject\Fieldcollection\Data\Unittestfieldcollection();
         $fc->setFieldinput1('field1' . $seed);
         $fc->setFieldinput2('field2' . $seed);
-        $objects = $this->getObjectList("o_type = 'object'");
         $this->fillObjects($fc, 'fieldRelation');
         $items = new DataObject\Fieldcollection([$fc], $field);
         $object->$setter($items);
