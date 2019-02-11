@@ -999,6 +999,9 @@ class TestDataHelper extends Module
             $value = $object->$getter();
         }
 
+        var_export($expectedArray);
+        var_export($value);
+
         $this->assertEquals(
             $this->getElementPaths($expectedArray),
             $this->getElementPaths($value)
